@@ -1,122 +1,118 @@
-# Sentinel — File Integrity Monitoring Tool
+# Sentinel — File Integrity Monitor
 
-A Python-based cybersecurity application that monitors file integrity using SHA-256 cryptographic hashing. Sentinel establishes a baseline of files in a selected directory and identifies files that have been added, modified, or deleted.
+A simple Python cybersecurity project that monitors files and detects changes using SHA-256 cryptographic hashes.
 
-## Overview
+Sentinel provides a graphical desktop interface for creating a file baseline, monitoring a selected folder, identifying changes, and exporting scan reports.
 
-File integrity monitoring is an important security practice used to identify unauthorised or unexpected changes to files. Sentinel demonstrates this concept through a simple desktop application with a graphical user interface (GUI).
-
-The application compares the current state of a monitored folder against a saved baseline and displays detected changes in a security events dashboard.
+> **Project level:** Beginner / learning project  
+> **Purpose:** Cybersecurity education and portfolio demonstration  
+> **Platform:** Windows desktop
 
 ## Features
 
-- **SHA-256 Hashing:** Generates cryptographic hashes to establish file integrity baselines.
-- **File Change Detection:** Identifies added, modified, and deleted files by comparing scans against the saved baseline.
-- **Graphical User Interface:** Provides a desktop dashboard built with Python and Tkinter.
-- **Security Event Dashboard:** Displays detected changes, timestamps, event types, and file details.
-- **CSV Report Export:** Exports detected security events for documentation and further analysis.
-- **Local Processing:** Scans files locally without uploading their contents to an external service.
+- **SHA-256 hashing:** Calculates a cryptographic hash for each accessible file.
+- **Baseline creation:** Records the initial hashes of files in a selected folder.
+- **Change detection:** Identifies added, modified, and deleted files.
+- **Real-time monitoring:** Uses Watchdog to observe filesystem activity.
+- **Security dashboard:** Displays file counts, detected changes, and recent events.
+- **Event investigation:** Shows previous and current SHA-256 hashes for individual events.
+- **Windows notifications:** Provides desktop alerts when changes are detected, when notification support is available.
+- **Scan summaries:** Records scan times, durations, errors, and skipped items.
+- **CSV reports:** Exports scan summaries and security events for further review.
 
 ## Technologies Used
 
 - Python
 - Tkinter — graphical user interface
-- hashlib — SHA-256 hashing
-- JSON — baseline storage
-- CSV — security report generation
-- pathlib and os — filesystem operations
+- SHA-256 via Python's `hashlib`
+- Watchdog — filesystem event monitoring
+- Winotify — Windows desktop notifications
+- JSON — local baseline and scan-history storage
+- CSV — report export
 
 ## How It Works
 
-1. **Select a folder:** Choose the directory you want to monitor.
-2. **Create a baseline:** Sentinel calculates the SHA-256 hash of each accessible file and saves the results.
-3. **Scan for changes:** The application calculates current hashes and compares them against the saved baseline.
-4. **Review security events:** Changes are classified as added, modified, or deleted files.
-5. **Export a report:** Save detected events as a CSV file for further review.
+1. Select a folder to monitor.
+2. Create a baseline, which calculates and stores the SHA-256 hashes of accessible files.
+3. Start monitoring to observe filesystem activity.
+4. Add, modify, or delete files in the selected folder.
+5. Review detected events in the dashboard.
+6. Run a manual scan to compare the current files against the previous known state.
+7. Export a CSV report for review.
 
-### Detection Logic
+A file's SHA-256 hash acts as a digital fingerprint of its contents. When the contents change, the hash will normally change as well. Sentinel uses this comparison to help identify unexpected file modifications.
 
-| Event | Detection method |
-|---|---|
-| Added | File exists in the current scan but not in the baseline |
-| Modified | File exists in both scans, but its SHA-256 hash differs |
-| Deleted | File exists in the baseline but not in the current scan |
+## Installation
 
-## Getting Started
+### Requirements
 
-### Prerequisites
-
-- Windows computer
+- Windows
 - Python 3 installed
-- Visual Studio Code (recommended for development)
+- Internet access for installing dependencies
 
-Tkinter is included with most standard Windows Python installations. No additional third-party Python packages are required for the current version.
+### Setup
 
-### Run the Application
+1. Download or clone this repository.
+2. Open a terminal in the project folder.
+3. Install the dependencies:
 
-1. Clone this repository or download the project files.
-2. Open the project folder in Visual Studio Code.
-3. Open `app.pyw`.
-4. Run the application using your configured Python environment.
+   ```bash
+   py -m pip install -r requirements.txt
+   ```
 
-The application opens a desktop window for selecting folders, creating baselines, scanning for changes, and exporting reports.
+4. Launch the application by double-clicking `app.pyw`.
 
-### Test the Application
+   Alternatively, run it from the terminal:
 
-Use a dedicated test folder containing sample text files.
+   ```bash
+   py app.pyw
+   ```
 
-1. Create a file named `example.txt`.
-2. Select the folder in Sentinel and click **Create Baseline**.
-3. Modify `example.txt`, save it, and scan again to test modification detection.
-4. Create another file and scan to test addition detection.
-5. Delete a file that existed when the baseline was created, then scan again to test deletion detection.
-6. Export the detected events to a CSV report.
+If the `py` command is unavailable, use your Python installation's equivalent command.
 
-## Project Structure
+## Testing the Application
 
-```text
-File-Integrity-Monitor/
-├── app.pyw
-└── README.md
-```
+For a safe demonstration, create a separate folder containing sample text files.
 
-The application stores its baseline and exported reports in a local application-data folder under the user's home directory.
+1. Select the test folder in Sentinel.
+2. Click **Create Baseline**.
+3. Click **Start Monitoring**.
+4. Create a new text file and confirm it is reported as added.
+5. Edit an existing file and confirm it is reported as modified.
+6. Delete a test file and confirm it is reported as deleted.
+7. Use **Scan Now** to reconcile the current folder state.
+8. Export a CSV report to inspect the results.
 
-## Security Considerations and Limitations
+Use disposable test files rather than important system files or sensitive folders.
 
-- The current version detects changes when a scan is initiated manually; continuous real-time monitoring is not implemented.
-- File changes are compared against the saved baseline, not the previous scan.
-- The baseline should be protected against unauthorised modification. If an attacker can modify the baseline, detection reliability may be compromised.
-- Files that cannot be accessed or read may not be included reliably in scan results.
-- Sentinel is a learning and portfolio project and is not a replacement for enterprise file integrity monitoring or endpoint detection and response solutions.
+## Real-World Relevance
+
+File integrity monitoring is relevant to defensive security because unexpected file changes can be an indicator worth investigating.
+
+Related uses include:
+
+- Monitoring configuration files on servers.
+- Checking important application files for unexpected changes.
+- Identifying changes to security-sensitive scripts.
+- Supporting change-control and security-audit processes.
+- Helping investigate suspicious modifications to files.
+
+In professional environments, file integrity monitoring is commonly part of a broader security monitoring approach. Sentinel demonstrates the basic concept; it does not replace enterprise endpoint detection, centralized monitoring, or a full security information and event management (SIEM) platform.
+
+## Limitations
+
+- This is a simple educational prototype, not a production-grade security product.
+- Real-time filesystem events may be duplicated or missed; manual scans help reconcile the folder state.
+- Changes are detected through file contents and observed filesystem events, not by determining whether an action was malicious.
+- Files that cannot be accessed may not be included in a scan.
+- The application does not currently provide a complete, persistent history of every individual security event across application restarts.
+- Windows notifications depend on the relevant dependency and operating-system notification settings.
+- The tool does not upload monitored file contents to a remote security service.
 
 ## Future Improvements
 
-- Real-time filesystem monitoring
-- Persistent security event history
-- Baseline integrity protection
-- Detection of baseline changes
-- Filtering and searching security events
-- Improved handling of inaccessible files
-- Standalone Windows executable packaging
-
-## Learning Objectives
-
-This project explores practical cybersecurity and software development concepts, including:
-
-- Cryptographic hashing and file integrity verification
-- Filesystem monitoring and change detection
-- Security event reporting
-- Python application development
-- Basic defensive security tooling
+Possible extensions include persistent event history, scheduled scans, configurable exclusions, improved handling of filesystem errors, and stronger alerting and reporting.
 
 ## Disclaimer
 
-Sentinel is intended for educational and defensive cybersecurity purposes. Test the application on folders you own or are authorised to monitor.
-
-## Author
-
-**Kaushik Goundar**
-
-
-*Built as a hands-on cybersecurity portfolio project to explore file integrity monitoring and defensive security practices.*
+This project is intended for educational and defensive security purposes. Test it with files and folders you own or are authorized to monitor.
